@@ -31,7 +31,19 @@ The 0-100 Mog Score is calculated using three weighted metrics:
 
 ## Installation & Usage
 
-1. **Run the Application:**
+1. **Clone the repository:**
+   ```bash
+   git clone <your-repository-url>
+   cd itw_pro_mogg
+   ```
+
+2. **Install dependencies:**
+   Ensure you have Python installed, then install the required libraries:
+   ```bash
+   pip install flask deepface opencv-python numpy matplotlib mss
+   ```
+
+3. **Run the Application:**
    * **Windows:** Simply double-click `Start_App.bat` to launch the mode selector.
    * **Manual Launch:** Run `python launcher.py` to open the main configuration menu. From there, you can select your operating mode and launch either the Web Dashboard or the Live Meeting Overlay.
 
