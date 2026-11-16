@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DeepFace — Emotion Detection</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&family=Plus+Jakarta+Sans:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="sidebar-top">
+        <a class="brand" href="#home">
+          <span class="brand-icon">☺</span>
+          <span>
+            <strong>DeepFace</strong>
+            <small>Emotion Detection</small>
+          </span>
+        </a>
+
+        <nav aria-label="Primary Navigation">
+          <a class="nav-item active" href="#home">
+            <span class="nav-icon">⌂</span>
+            <span>Dashboard</span>
+          </a>
+          <a class="nav-item" href="#camera">
+            <span class="nav-icon">◉</span>
+            <span>Live camera</span>
+          </a>
+          <a class="nav-item" href="#upload">
+            <span class="nav-icon">▧</span>
+            <span>Upload image</span>
+          </a>
+        </nav>
+      </div>
+
+      <div class="sidebar-footer">
+        <div class="sidebar-card">
+          <div class="sidebar-note">
+            <span class="pulse"></span>
+            <span>Ready to analyze</span>
+          </div>
+          <p class="sidebar-sub">Local Flask + OpenCV inference running on port 5000.</p>
+        </div>
+      </div>
+    </aside>
+
+    <main id="home" class="main">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">AI VISION / EMOTION ANALYSIS</p>
+          <h1>Emotion dashboard</h1>
+          <p class="subheading">Analyze facial expressions from a portrait image or your live camera.</p>
+        </div>
+
+        <div class="topbar-actions">
+          <button class="theme-toggle" id="themeToggle" type="button" title="Switch color theme">
+            <span id="themeIcon">☾</span>
+            <span id="themeLabel">Dark mode</span>
+          </button>
+          <div class="status-pill">
+            <span class="pulse"></span>
+            <span>Model interface</span>
+          </div>
+        </div>
+      </header>
+
+      <section class="workspace">
+        <article class="panel media-panel">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">INPUT SOURCE</p>
+              <h2 id="sourceTitle">Image upload</h2>
+            </div>
+            <div class="mode-tabs" role="tablist">
+              <button class="mode-tab active" data-mode="upload" type="button">Upload image</button>
+              <button class="mode-tab" data-mode="camera" id="cameraTab" type="button">Live webcam</button>
+            </div>
+          </div>
+
+          <div class="preview" id="preview">
+            <div class="empty-state" id="emptyState">
+              <div class="upload-ring">
+                <div class="upload-symbol">↑</div>
+              </div>
+              <h3>Drop an image here</h3>
+              <p>Drag and drop a photo here, or choose one from your device</p>
+              <label class="primary-button choose-button" for="imageInput">Choose image</label>
+              <span class="file-hint">JPG, PNG, WEBP · up to 10 MB</span>
+            </div>
+
+            <img id="imagePreview" alt="Selected image preview" hidden>
+            <img id="cameraVideo" alt="Live OpenCV Stream" hidden>
+            <img id="matlabPlot" alt="Post-Session Timeline Plot" hidden>
+          </div>
+
+          <input id="imageInput" type="file" accept="image/png,image/jpeg,image/webp" hidden>
+
+          <div class="media-footer">
+            <div class="media-actions" id="uploadActions">
+              <button class="primary-button" id="analyzeButton" type="button" disabled>
+                <span>Analyze emotions</span>
+                <span>→</span>
+              </button>
+              <button class="secondary-button" id="clearButton" type="button">Reset</button>
+            </div>
+
+            <div class="media-actions" id="cameraActions" hidden>
+              <button class="primary-button" id="captureButton" type="button">
+                <span>Start Live Tracking</span>
+                <span>→</span>
+              </button>
+              <button class="secondary-button danger-button" id="stopCameraButton" type="button" disabled>
+                Stop &amp; Plot
+              </button>
+            </div>
+
+            <p class="feedback" id="feedback" role="status">Choose an image to begin.</p>
+          </div>
+        </article>
+
+        <aside class="results-column">
+          <article class="dominant-card" id="dominantCard">
+            <div class="dominant-top">
+              <span class="sparkle">✦ DOMINANT EMOTION</span>
+              <span class="tag">TOP RESULT</span>
+            </div>
+            <div class="dominant-content">
+              <div class="dominant-face" id="dominantFace">☺</div>
+              <div class="dominant-info">
+                <h3 id="dominantEmotion">Waiting for result</h3>
+                <p id="dominantScore">Analyze an image to see the top confidence score.</p>
+              </div>
+            </div>
+          </article>
+
+          <article class="panel results-panel">
+            <div class="panel-heading">
+              <div>
+                <p class="eyebrow">MODEL OUTPUT</p>
+                <h2>Emotion breakdown</h2>
+              </div>
+              <span class="tag">7 Classes</span>
+            </div>
+
+            <div id="emotionList" class="emotion-list">
+              <div class="result-placeholder">
+                <span class="placeholder-icon">◌</span>
+                <p>Your emotion percentages will appear here after analysis.</p>
+              </div>
+            </div>
+
+            <div class="result-footnote">
+              Scores are model confidence estimates, not definitive measures of a person's feelings.
+            </div>
+          </article>
+
+          <article class="privacy-note">
+            <span class="privacy-icon">ⓘ</span>
+            <p><strong>Privacy tip</strong><br>Images are processed locally by your Flask server and are never uploaded to external cloud servers.</p>
+          </article>
+        </aside>
+      </section>
+
+      <footer>
+        <span>DeepFace Emotion Detection</span>
+        <span>Built with Flask · OpenCV · DeepFace · JavaScript</span>
+      </footer>
+    </main>
+  </div>
+
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>

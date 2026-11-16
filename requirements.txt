@@ -1,0 +1,8 @@
+flask
+deepface
+tf-keras
+opencv-python
+mediapipe
+matplotlib
+numpy
+mss
